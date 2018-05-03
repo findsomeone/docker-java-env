@@ -1,0 +1,28 @@
+version: '2'
+services:
+  tomcat:
+    build:
+      context: .
+      dockerfile: deploy/development/Dockerfile
+    image: fms-api-tomcat-dev
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+      - redis
+  db:
+    image: mysql/mysql-server
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  redis:
+    image: redis:4-alpine
+    volumes:
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/redis:/data
+    ports:
+      - 6379:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
